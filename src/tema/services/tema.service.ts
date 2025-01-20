@@ -11,12 +11,19 @@ export class TemaService {
   ) {}
 
   async findAll(): Promise<Tema[]> {
-    return this.temaRepository.find();
+    return this.temaRepository.find({
+      relations: {
+        postagem: true,
+      },
+    });
   }
 
   async findById(id: number): Promise<Tema> {
     const tema = await this.temaRepository.findOne({
       where: { id },
+      relations: {
+        postagem: true,
+      },
     });
 
     if (!tema)
@@ -30,6 +37,9 @@ export class TemaService {
       where: {
         descricao: ILike(`%${descricao}%`),
       },
+      relations: {
+        postagem: true,
+      },
     });
   }
 
@@ -38,11 +48,10 @@ export class TemaService {
   }
 
   async update(tema: Tema): Promise<Tema> {
-    await this.findById(tema.id);  
-    
-    if(!tema.id)
-        throw new HttpException('Digite um ID', HttpStatus.BAD_REQUEST);
+    await this.findById(tema.id);
 
+    if (!tema.id)
+      throw new HttpException('Digite um ID', HttpStatus.BAD_REQUEST);
 
     return await this.temaRepository.save(tema);
   }
