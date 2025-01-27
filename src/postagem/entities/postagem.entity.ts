@@ -9,30 +9,37 @@ import {
 } from 'typeorm';
 import { Tema } from '../../tema/entities/tema.entity';
 import { Usuario } from '../../usuario/entities/usuario.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'tb_postagens' }) // CREATE TABLE tb_postagens()
 export class Postagem {
-  @PrimaryGeneratedColumn() // AUTO_INCREMENT PRIMARY KEY
+  @PrimaryGeneratedColumn()
+  @ApiProperty() // AUTO_INCREMENT PRIMARY KEY
   id: number;
 
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @IsNotEmpty() // VALIDACAO DOS DADOS DO OBJETO
-  @Column({ length: 100, nullable: false }) // VARCHAR(100) NOT NULL
+  @Column({ length: 100, nullable: false })
+  @ApiProperty() // VARCHAR(100) NOT NULL
   titulo: string;
 
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @IsNotEmpty() // VALIDACAO DOS DADOS DO OBJETO
   @Column({ length: 1000, nullable: false }) // VARCHAR(1000) NOT NULL
+  @ApiProperty()
   texto: string;
 
-  @UpdateDateColumn() // Atualiza a data e hora toda vez que eu mudar uma informação no objeto
+  @UpdateDateColumn()
+  @ApiProperty() // Atualiza a data e hora toda vez que eu mudar uma informação no objeto
   data: Date;
 
+  @ApiProperty({ type: () => Tema })
   @ManyToOne(() => Tema, (tema) => tema.postagem, {
     onDelete: 'CASCADE',
   })
   tema: Tema;
 
+  @ApiProperty({ type: () => Tema })
   @ManyToOne(() => Usuario, (usuario) => usuario.postagem, {
     onDelete: 'CASCADE',
   })
